@@ -67,6 +67,7 @@ class HomeWidget extends ConsumerWidget {
                                 );
                               },
                               child: Column(
+                                mainAxisSize: MainAxisSize.max,
                                 children: <Widget>[
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(8.0),

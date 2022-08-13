@@ -2,6 +2,9 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:imdb_clone/account_service.dart';
+import 'package:imdb_clone/profile_page.dart';
+import 'package:imdb_clone/register.dart';
 
 class AccountWidget extends StatefulWidget {
   const AccountWidget({Key? key}) : super(key: key);
@@ -90,9 +93,20 @@ class _AccountWidgetState extends State<AccountWidget> {
                   ),
                   ElevatedButton(
                     onPressed: () async {
-                      createUser(email: emailCtrlr.text, pwd: pwdCtrlr.text);
+                      var user = await AccountService.login(
+                          email: emailCtrlr.text, password: pwdCtrlr.text);
 
-                      if (_formKey.currentState!.validate()) {}
+                      if (user != null) {
+                        var userData =
+                            await AccountService.getUserData(user.uid);
+
+                        Navigator.of(context, rootNavigator: false)
+                            .pushReplacement(
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  ProfilePage(user: user, userData: userData)),
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.fromLTRB(40, 15, 40, 15),
@@ -113,15 +127,14 @@ class _AccountWidgetState extends State<AccountWidget> {
                       const Text('Not registered yet?'),
                       TextButton(
                         onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
+                          Navigator.of(context, rootNavigator: false).push(
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  const Text("register w should be here"),
-                            ),
+                                builder: (context) => RegisterWidget()),
                           );
                         },
-                        child: const Text('Create an account'),
+                        child: const Text(
+                          'Create an account',
+                        ),
                       ),
                     ],
                   ),
@@ -132,13 +145,5 @@ class _AccountWidgetState extends State<AccountWidget> {
         ),
       ),
     );
-  }
-
-  Future createUser({required String email, required String pwd}) async {
-    final docUser = FirebaseFirestore.instance.collection('users').doc();
-
-    final creds = {'email': email, 'password': pwd};
-
-    await docUser.set(creds);
   }
 }

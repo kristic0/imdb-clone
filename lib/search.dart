@@ -5,8 +5,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:imdb_clone/env_conf.dart';
+import 'package:imdb_clone/movie_service.dart';
 import 'package:imdb_clone/search_item.dart';
 import 'package:imdb_clone/search_service.dart';
+import 'package:imdb_clone/single_movie_page.dart';
 
 class SearchWidget extends StatefulWidget {
   SearchWidget({Key? key}) : super(key: key);
@@ -56,6 +58,20 @@ class _SearchWidgetState extends State<SearchWidget> {
                     }
 
                     return ListTile(
+                      onTap: () async {
+                        final movieService =
+                            MovieService(Dio(), EnvironmentConfig());
+                        final fullMovie = await movieService
+                            .getSingleMovie(_searchItems[index].id ?? 0);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SingleMoviePage(
+                                    movie: fullMovie,
+                                  )),
+                        );
+                      },
+                      minVerticalPadding: 25,
                       leading: Image.network(imgUrl),
                       title: Text(_searchItems[index].originalTitle ??
                           'something went wrong'),
@@ -84,10 +100,14 @@ class _SearchWidgetState extends State<SearchWidget> {
     double height1 = height - padding.top - padding.bottom;
 
     return Scaffold(
-      body: Column(children: <Widget>[
-        Padding(padding: EdgeInsets.fromLTRB(5, 50, 5, 0), child: _searchBar()),
-        Expanded(flex: 1, child: _mainData()),
-      ]),
+      body: Column(
+        children: <Widget>[
+          Padding(
+              padding: EdgeInsets.fromLTRB(5, 50, 5, 0), child: _searchBar()),
+          Expanded(flex: 1, child: _mainData()),
+        ],
+        mainAxisSize: MainAxisSize.min,
+      ),
     );
   }
 }
