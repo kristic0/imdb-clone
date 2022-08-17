@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:imdb_clone/header_widget.dart';
 import 'package:imdb_clone/home.dart';
 import 'package:imdb_clone/update_field_page.dart';
+import 'package:imdb_clone/update_profile_img.dart';
 
 void rebuildAllChildren(BuildContext context) {
   void rebuild(Element el) {
@@ -37,7 +38,20 @@ class _ProfilePageState extends State<ProfilePage> {
   User user;
   var userData;
 
+  String _imagePath =
+      "https://st2.depositphotos.com/1006318/5909/v/950/depositphotos_59095529-stock-illustration-profile-icon-male-avatar.jpg";
+
   _ProfilePageState({required this.user, required this.userData});
+
+  void _updateImagePath(String newPath) {
+    setState(() => _imagePath = newPath);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _imagePath = userData['profileImage'];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,36 +93,43 @@ class _ProfilePageState extends State<ProfilePage> {
                   Container(
                     width: 130,
                     height: 130,
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                            width: 4,
-                            color: Theme.of(context).scaffoldBackgroundColor),
-                        boxShadow: [
-                          BoxShadow(
-                              spreadRadius: 2,
-                              blurRadius: 10,
-                              color: Colors.black.withOpacity(0.1),
-                              offset: const Offset(0, 10))
-                        ],
-                        shape: BoxShape.circle,
-                        image: const DecorationImage(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(
-                              "https://st2.depositphotos.com/1006318/5909/v/950/depositphotos_59095529-stock-illustration-profile-icon-male-avatar.jpg",
-                            ))),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context, rootNavigator: false).push(
+                            MaterialPageRoute(
+                                builder: (context) => UpdateProfileImage(
+                                    update: _updateImagePath, user: user)));
+                      },
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                width: 4,
+                                color:
+                                    Theme.of(context).scaffoldBackgroundColor),
+                            boxShadow: [
+                              BoxShadow(
+                                  spreadRadius: 2,
+                                  blurRadius: 10,
+                                  color: Colors.black.withOpacity(0.1),
+                                  offset: const Offset(0, 10))
+                            ],
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: NetworkImage(_imagePath))),
+                      ),
+                    ),
                   ),
                   SizedBox(
                     height: 20,
                   ),
                   Text(
                     userData['name'],
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(
-                    height: 20,
+                    style: const TextStyle(
+                        fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                   Container(
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     child: Column(
                       children: <Widget>[
                         Container(
