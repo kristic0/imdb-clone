@@ -5,6 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:imdb_clone/header_widget.dart';
 import 'package:imdb_clone/home.dart';
+import 'package:imdb_clone/update_field_page.dart';
+
+void rebuildAllChildren(BuildContext context) {
+  void rebuild(Element el) {
+    el.markNeedsBuild();
+    el.visitChildren(rebuild);
+  }
+
+  (context as Element).visitChildren(rebuild);
+}
 
 class ProfilePage extends StatefulWidget {
   late User _user;
@@ -31,6 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    rebuildAllChildren(context);
     return Scaffold(
       appBar: AppBar(
         title: Center(
@@ -57,7 +68,7 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             Container(
               height: 100,
-              child: HeaderWidget(100, false, Icons.house_rounded),
+              child: HeaderWidget(100),
             ),
             Container(
               alignment: Alignment.center,
@@ -66,24 +77,25 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Column(
                 children: [
                   Container(
-                    padding: EdgeInsets.all(10),
+                    width: 130,
+                    height: 130,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                      border: Border.all(width: 5, color: Colors.white),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 20,
-                          offset: const Offset(5, 5),
-                        ),
-                      ],
-                    ),
-                    child: Icon(
-                      Icons.person,
-                      size: 80,
-                      color: Colors.grey.shade300,
-                    ),
+                        border: Border.all(
+                            width: 4,
+                            color: Theme.of(context).scaffoldBackgroundColor),
+                        boxShadow: [
+                          BoxShadow(
+                              spreadRadius: 2,
+                              blurRadius: 10,
+                              color: Colors.black.withOpacity(0.1),
+                              offset: const Offset(0, 10))
+                        ],
+                        shape: BoxShape.circle,
+                        image: const DecorationImage(
+                            fit: BoxFit.cover,
+                            image: NetworkImage(
+                              "https://st2.depositphotos.com/1006318/5909/v/950/depositphotos_59095529-stock-illustration-profile-icon-male-avatar.jpg",
+                            ))),
                   ),
                   SizedBox(
                     height: 20,
@@ -130,15 +142,41 @@ class _ProfilePageState extends State<ProfilePage> {
                                           subtitle: Text(user.email ?? "email"),
                                         ),
                                         ListTile(
-                                          leading: Icon(Icons.phone),
-                                          title: Text("Phone"),
-                                          subtitle: Text("99--99876-56"),
+                                          leading: Icon(Icons.date_range),
+                                          title: Text("Birthday"),
+                                          subtitle: Text(userData["birthday"]),
+                                          onTap: () => {
+                                            Navigator.of(context,
+                                                    rootNavigator: false)
+                                                .push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      UpdateFieldPage(
+                                                          Icons.date_range,
+                                                          "birthday",
+                                                          user.uid,
+                                                          userData)),
+                                            )
+                                          },
                                         ),
                                         ListTile(
-                                          leading: Icon(Icons.person),
+                                          leading: Icon(Icons.info_outline),
                                           title: Text("About Me"),
-                                          subtitle: Text(
-                                              "This is a about me link and you can khow about me in this section."),
+                                          subtitle:
+                                              Text(userData["about"] ?? ""),
+                                          onTap: () => {
+                                            Navigator.of(context,
+                                                    rootNavigator: false)
+                                                .push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      UpdateFieldPage(
+                                                          Icons.info_outline,
+                                                          "about",
+                                                          user.uid,
+                                                          userData)),
+                                            )
+                                          },
                                         ),
                                       ],
                                     ),

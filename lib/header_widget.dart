@@ -4,23 +4,17 @@ import 'package:flutter/material.dart';
 
 class HeaderWidget extends StatefulWidget {
   final double _height;
-  final bool _showIcon;
-  final IconData _icon;
 
-  const HeaderWidget(this._height, this._showIcon, this._icon, {Key? key})
-      : super(key: key);
+  const HeaderWidget(this._height, {Key? key}) : super(key: key);
 
   @override
-  _HeaderWidgetState createState() =>
-      _HeaderWidgetState(_height, _showIcon, _icon);
+  _HeaderWidgetState createState() => _HeaderWidgetState(_height);
 }
 
 class _HeaderWidgetState extends State<HeaderWidget> {
   double _height;
-  bool _showIcon;
-  IconData _icon;
 
-  _HeaderWidgetState(this._height, this._showIcon, this._icon);
+  _HeaderWidgetState(this._height);
 
   @override
   Widget build(BuildContext context) {
@@ -91,38 +85,6 @@ class _HeaderWidgetState extends State<HeaderWidget> {
               Offset(width / 5 * 4, _height - 80),
               Offset(width, _height - 20)
             ]),
-          ),
-          Visibility(
-            visible: _showIcon,
-            child: Container(
-              height: _height - 40,
-              child: Center(
-                child: Container(
-                  margin: EdgeInsets.all(20),
-                  padding: EdgeInsets.only(
-                    left: 5.0,
-                    top: 20.0,
-                    right: 5.0,
-                    bottom: 20.0,
-                  ),
-                  decoration: BoxDecoration(
-                    // borderRadius: BorderRadius.circular(20),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(100),
-                      topRight: Radius.circular(100),
-                      bottomLeft: Radius.circular(60),
-                      bottomRight: Radius.circular(60),
-                    ),
-                    border: Border.all(width: 5, color: Colors.white),
-                  ),
-                  child: Icon(
-                    _icon,
-                    color: Colors.white,
-                    size: 40.0,
-                  ),
-                ),
-              ),
-            ),
           ),
         ],
       ),
