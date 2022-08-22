@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:imdb_clone/account_service.dart';
 import 'package:imdb_clone/profile_page.dart';
 
 class RegisterWidget extends StatefulWidget {
@@ -194,19 +195,16 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                             .doc(user!.uid)
                             .set({
                           'name': nameCtrlr.text,
-                          'birthday': birthdayCtrlr.text
+                          'birthday': birthdayCtrlr.text,
+                          'about': "About me",
+                          'profileImage':
+                              "https://st2.depositphotos.com/1006318/5909/v/950/depositphotos_59095529-stock-illustration-profile-icon-male-avatar.jpg"
                         });
 
-                        var userData;
-                        FirebaseFirestore.instance
-                            .collection('users')
-                            .where('uid', isEqualTo: user.uid)
-                            .get()
-                            .then((value) {
-                          userData = value;
-                        });
+                        var userData =
+                            await AccountService.getUserData(user.uid);
 
-                        Navigator.of(context, rootNavigator: true)
+                        Navigator.of(context, rootNavigator: false)
                             .pushReplacement(
                           MaterialPageRoute(
                               builder: (context) =>

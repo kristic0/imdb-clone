@@ -14,13 +14,15 @@
       "name": "imdb_clone (profile mode)",
       "request": "launch",
       "type": "dart",
-      "flutterMode": "profile"
+      "flutterMode": "profile",
+      "args": ["--dart-define=movieApiKey=771616f1ab6ebcf00cf1cc63579899d0"]
     },
     {
       "name": "imdb_clone (release mode)",
       "request": "launch",
       "type": "dart",
-      "flutterMode": "release"
+      "flutterMode": "release",
+      "args": ["--dart-define=movieApiKey=771616f1ab6ebcf00cf1cc63579899d0"]
     }
   ]
 }

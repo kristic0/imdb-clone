@@ -44,13 +44,31 @@ class _ProfilePageState extends State<ProfilePage> {
   _ProfilePageState({required this.user, required this.userData});
 
   void _updateImagePath(String newPath) {
-    setState(() => _imagePath = newPath);
+    setState(() {
+      _imagePath = newPath;
+    });
+  }
+
+  void _updateBirthday(String birthdate) {
+    setState(() {
+      this.userData['birthday'] = birthdate;
+    });
+  }
+
+  void _updateAbout(String about) {
+    setState(() {
+      this.userData['about'] = about;
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    _imagePath = userData['profileImage'];
+    if (userData != null) {
+      if (userData['profileImage'] != null) {
+        _imagePath = userData['profileImage'];
+      }
+    }
   }
 
   @override
@@ -124,7 +142,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     height: 20,
                   ),
                   Text(
-                    userData['name'],
+                    userData['name'] ?? "name",
                     style: const TextStyle(
                         fontSize: 22, fontWeight: FontWeight.bold),
                   ),
@@ -165,7 +183,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                         ListTile(
                                           leading: Icon(Icons.date_range),
                                           title: Text("Birthday"),
-                                          subtitle: Text(userData["birthday"]),
+                                          subtitle: Text(userData["birthday"] ??
+                                              "not set"),
                                           onTap: () => {
                                             Navigator.of(context,
                                                     rootNavigator: false)
@@ -176,7 +195,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                                           Icons.date_range,
                                                           "birthday",
                                                           user.uid,
-                                                          userData)),
+                                                          userData,
+                                                          _updateBirthday)),
                                             )
                                           },
                                         ),
@@ -195,7 +215,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                                           Icons.info_outline,
                                                           "about",
                                                           user.uid,
-                                                          userData)),
+                                                          userData,
+                                                          _updateAbout)),
                                             )
                                           },
                                         ),

@@ -6,20 +6,27 @@ class UpdateFieldPage extends StatefulWidget {
   String uid = '';
   String s = '';
   late IconData icon;
-
+  var updateFieldState;
   var userData;
 
-  UpdateFieldPage(IconData icon, String s, String uid, userData, {Key? key})
+  UpdateFieldPage(IconData icon, String s, String uid, userData,
+      void Function(String updateFieldState) updateFieldState,
+      {Key? key})
       : super(key: key) {
     this.uid = uid;
     this.s = s;
     this.icon = icon;
     this.userData = userData;
+    this.updateFieldState = updateFieldState;
   }
 
   @override
-  State<StatefulWidget> createState() =>
-      _UpdateFieldPage(icon: icon, s: s, uid: uid, userData: userData);
+  State<StatefulWidget> createState() => _UpdateFieldPage(
+      updateFieldState: updateFieldState,
+      icon: icon,
+      s: s,
+      uid: uid,
+      userData: userData);
 }
 
 class _UpdateFieldPage extends State<UpdateFieldPage> {
@@ -30,15 +37,19 @@ class _UpdateFieldPage extends State<UpdateFieldPage> {
   var uid;
   var userData;
 
+  var updateFieldState;
+
   _UpdateFieldPage(
       {required this.icon,
       required this.s,
       required this.uid,
-      required this.userData});
+      required this.userData,
+      required this.updateFieldState});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Scaffold(
+        body: Container(
       child: Center(
         child: Column(children: [
           const SizedBox(
@@ -67,6 +78,7 @@ class _UpdateFieldPage extends State<UpdateFieldPage> {
                   .then((_) => print('Success'))
                   .catchError((error) => print('Failed: $error'));
 
+              updateFieldState(updateField.text);
               Navigator.pop(context);
 
               setState(() {
@@ -85,6 +97,6 @@ class _UpdateFieldPage extends State<UpdateFieldPage> {
           ),
         ]),
       ),
-    );
+    ));
   }
 }
